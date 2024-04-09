@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    
+    <title>Vital Assistant</title>
+    
+    <style>
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden; 
+        display: flex;    
+        flex-direction: column;
+    }
+    #menuView {
+        height: 5%; 
+        flex-shrink: 0;
+    }
+    #webView {
+        height: 95%; 
+        flex-grow: 1; 
+    }
+        
+</style>
+    
+    
+</head>
+<body>
+    
+    <webview id="menuView" src="menu.html" preload="preload-menu.js"></webview>
+    
+    <webview id="mainView" allowpopups src="https://chat-app-front.chat.ai" preload="preload-main.js"></webview>
+    
+    <script src="index.js"></script>
+
+    <script src="renderer-index.js"></script>
+
+    
+</body>
+</html>

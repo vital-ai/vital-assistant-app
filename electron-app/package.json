@@ -1,0 +1,50 @@
+{
+  "name": "vital-assistant",
+  "author": "Marc Hadfield",
+  "productName": "VitalAssistant",
+  "version": "1.0.0",
+  "description": "Vital Assistant App",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "6.0.0-beta.61",
+    "eslint": "8.57.0",
+    "electron": "29.2.0",
+    "electron-builder": "24.13.3"  
+  },
+    
+  "electronPackagerConfig": {
+   
+    "executableName": "VitalAssistant"
+    
+  },
+  "build": {
+    "appId": "ai.vital.assistant",
+    "mac": {
+      "category": "public.app-category.utilities",
+        
+      "extendInfo": {
+        "CFBundleDisplayName": "VitalAssistant",
+        "CFBundleName": "VitalAssistant"
+        }
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "icons"
+    }
+  }
+}
