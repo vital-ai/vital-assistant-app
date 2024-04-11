@@ -2,7 +2,12 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld(
     'electronAPI', {
-        sendWebviewReady: () => ipcRenderer.send('webview-ready', 'mainview')
+        
+        sendWebviewReady: () => ipcRenderer.send('webview-ready', 'mainview'),
+        
+        receiveMessage: (callback) => ipcRenderer.on('message-from-main', (event, message) => callback(message)),
+
+        sendMessage: (msg) => ipcRenderer.send('mainview-message-to-main', msg)
     }
 );
 
@@ -13,7 +18,6 @@ ipcRenderer.on('ping', () => {
     ipcRenderer.send('webview-ready', 'mainview');
     
 });
-
 
 ipcRenderer.on('send-text-message', (event, text) => {
     

@@ -11,29 +11,25 @@
     "dist": "electron-builder"
   },
   "dependencies": {
-    
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "6.0.0-beta.61",
-    "eslint": "8.57.0",
     "electron": "29.2.0",
-    "electron-builder": "24.13.3"  
+    "electron-builder": "24.13.3",
+    "eslint": "8.57.0"
   },
-    
   "electronPackagerConfig": {
-   
     "executableName": "VitalAssistant"
-    
   },
   "build": {
     "appId": "ai.vital.assistant",
     "mac": {
       "category": "public.app-category.utilities",
-        
       "extendInfo": {
         "CFBundleDisplayName": "VitalAssistant",
         "CFBundleName": "VitalAssistant"
-        }
+      }
     },
     "win": {
       "target": "nsis",

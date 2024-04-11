@@ -1,5 +1,7 @@
 const { app, session, BrowserWindow, ipcMain, Menu, webContents } = require('electron');
 
+const { Worker } = require('worker_threads');
+
 const path = require('path');
 
 app.setName('Vital Assistant');
@@ -235,14 +237,19 @@ function createWindow() {
         mainViewWebContents.executeJavaScript(`handleElectronText("${text}");`).catch(err => console.log(err));
 
     });
-    
-    
-    
+     
 }
 
 
+const worker = new Worker('./src/ws_worker.js');
 
+async function openWebSocket(url) {
+    worker.postMessage({ command: 'open', url: url });
+}
 
+function closeWebSocket() {
+    worker.postMessage({ command: 'close' });
+}
 
 
 // disable checking cert for local testing
@@ -252,7 +259,35 @@ app.on('ready', () => {
   })
 })
 
-app.whenReady().then(() => {
+
+function waitForWebSocketOpen() {
+    
+    return new Promise((resolve, reject) => {
+        worker.on('message', (msg) => {
+            if (msg.type === 'open') {
+                console.log(msg.message);  // "WebSocket is open"
+                resolve();
+            } else if (msg.type === 'error') {
+                reject(new Error(msg.message));
+            }
+        });
+    });
+}
+
+async function setupWebSocket() {
+    try {
+        worker.postMessage({ command: 'open', url: 'ws://localhost:6060/ws' });
+        await waitForWebSocketOpen();
+        console.log('WebSocket is now open and ready for messages.');
+        // Now send a message or do other tasks
+        // worker.postMessage({ command: 'send', data: 'Hello server!' });
+    } catch (error) {
+        console.error('Error setting up WebSocket:', error);
+    }
+}
+
+
+app.whenReady().then( async () => {
     
     app.setAboutPanelOptions({
         applicationName: app.getName(),
@@ -269,6 +304,34 @@ app.whenReady().then(() => {
     Menu.setApplicationMenu(menu);
             
     createWindow();
+
+    worker.on('message', (msg) => {
+        
+        console.log('Message from WebSocket:', msg);
+
+        
+        if (msg.type === 'message') {
+            console.log('Message from WebSocket:', msg.data);
+        } else if (msg.type === 'status') {
+            console.log(`WebSocket is now ${msg.message}`);
+        } else if (msg.type === 'error') {
+            console.error('WebSocket error:', msg.error);
+        }
+    });
+            
+    await setupWebSocket();
+
+    const data = [
+        {
+            "type": "ping"
+        }
+    ];
+    
+    const jsonString = JSON.stringify(data);
+
+    worker.postMessage({ command: 'send', data: jsonString });
+
+
      
 });
 
